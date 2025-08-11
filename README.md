@@ -8,11 +8,14 @@ Use PPO (Proximal Policy Optimization) to allow for movements
 
 Use CQL (Conservative Q-Learning) for Battle Mechanics 
 
-
 Starting off with Pokemon Red/Blue - Test and Train with it as it is the smallest game of the bunch 
 
 Possible Games:
 -> Pokemon Gold/Silver
 -> Pokemon LeafGreen/FireRed
 -> Pokemon Alpha/Sapphire
+
+Emulator Chosen: PyBoy by Baekalfen 
+- Suprior Choice then using mGBA as mGBA is designed to play for humans
+- This Emulator allows and is designed for Python Agents
 
