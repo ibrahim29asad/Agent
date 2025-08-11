@@ -18,4 +18,6 @@ Possible Games:
 Emulator Chosen: PyBoy by Baekalfen 
 - Suprior Choice then using mGBA as mGBA is designed to play for humans
 - This Emulator allows and is designed for Python Agents
+#Pip install Guide for PyBoy to enter headless mode
+https://pypi.org/project/pyboy/
 
