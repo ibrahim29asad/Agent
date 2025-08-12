@@ -24,3 +24,9 @@ https://pypi.org/project/pyboy/
 The RAM Represents different catagroies such as names, pokemons, badges
 Each game has different RAM's so its important to adapt to the game
 https://datacrystal.tcrf.net/wiki/Pokémon_Red_and_Blue/RAM_map
+
+
+*** 60 frames is one Second ***
+
+
+Used Select Module as User Input is blocking and Select allows the option to blick or not by choosing a 0 value
