@@ -21,3 +21,6 @@ Emulator Chosen: PyBoy by Baekalfen
 #Pip install Guide for PyBoy to enter headless mode
 https://pypi.org/project/pyboy/
 
+The RAM Represents different catagroies such as names, pokemons, badges
+Each game has different RAM's so its important to adapt to the game
+https://datacrystal.tcrf.net/wiki/Pokémon_Red_and_Blue/RAM_map
