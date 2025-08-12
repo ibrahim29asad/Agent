@@ -30,3 +30,17 @@ https://datacrystal.tcrf.net/wiki/Pokémon_Red_and_Blue/RAM_map
 
 
 Used Select Module as User Input is blocking and Select allows the option to blick or not by choosing a 0 value
+
+
+# High Level Explination:
+Building a self-learning AI agent that plays Pokémon (a mainline game with story + post-game content) like a human starting from scratch, but without explicit instructions for battle decisions, item use, or capture strategy.
+
+It will:
+
+Learn only from its own play experience, not from pre-trained online models.
+Begin with no game knowledge — discovering mechanics, rules, and strategies as it goes.
+Adapt to in-game AI behavior by observing how NPC trainers and wild Pokémon act, then incorporating those patterns into its decision-making.
+Develop its own risk/reward system for battles, resource use, training, and capturing Pokémon.
+Persist knowledge between runs so it can replay the game better and apply its learned strategy to new Pokémon games or improve its times.
+Be trained using reinforcement learning (using PPO and CQL) using my M2 Pro’s GPU for simulation and training.
+Essentially — this is an autonomous Pokémon-playing RL system with long-term memory, designed to improve over time, adapt to opponents, and handle both main story and post-game content without human intervention.

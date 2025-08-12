@@ -12,7 +12,7 @@ Pokemon_game = os.getenv("POKEMON_BLUE_GAME_PATH")
 pyboy = PyBoy(Pokemon_game, window='null')
 
 # Runs for x frames
-x = 50000
+x = 50
 for _ in range(x):
     pyboy.button('start')
     pyboy.tick()

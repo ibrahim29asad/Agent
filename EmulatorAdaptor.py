@@ -2,14 +2,15 @@ from pyboy import PyBoy
 import io
 import keyboard
 import sys, select
+from PokemonBlue import PokemonBlue
 
 class EmulatorAdaptor:
     # For now we just want basic movments 
     def __init__(self, Game):
-        # pyboy = PyBoy(Game, window='null')
+        # self.pyboy = PyBoy(Game, window='null')
         print("Starting Emu")
         self.pyboy = PyBoy(Game)
-        
+        mems = self.pyboy.memory
         self.controls = {
             "1": 'up',
             "2": 'down',
@@ -21,8 +22,8 @@ class EmulatorAdaptor:
             "8": 'b',
             "9": 'end'
         }
-        
-        
+
+
     def button_Press(self, action):
         if action not in self.controls:
             print("Cant do that boss")
@@ -34,7 +35,10 @@ class EmulatorAdaptor:
             for _ in range(15):
                 self.pyboy.button(self.controls[action])
                 self.pyboy.tick()
-
+        
+        to_print = self.pyboy.memory[0xD158:0xD162]
+        new_word = PokemonBlue.decode_gen1(to_print)
+        print("Players Name is "+ new_word)
         
     def Save_State(self, saved):
         with io.BytesIO() as f:
@@ -65,7 +69,7 @@ class EmulatorAdaptor:
         while True:
             char = self.get_non_blocking_input()
             if char:
-                self.button_Press(char)
+                self.button_Press(char[0])
                 if char == "9":
                     break
             # Do other work here
