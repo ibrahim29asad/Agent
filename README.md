@@ -4,9 +4,14 @@ Battle Agent
 Creating a Python Agent utilizing Reinforcment Learning to complete and then build upon to beat Mainline Gameboy Pokemon Games
 
 System Arch.
+Use Gymnasium by OpenAI which is an API to create the RL (Reinforcment Learning) Enviroment
+https://gymnasium.farama.org/index.html
+pip install gymnasium
+
 Use PPO (Proximal Policy Optimization) to allow for movements 
 
 Use CQL (Conservative Q-Learning) for Battle Mechanics 
+
 
 Starting off with Pokemon Red/Blue - Test and Train with it as it is the smallest game of the bunch 
 
@@ -20,6 +25,7 @@ Emulator Chosen: PyBoy by Baekalfen
 - This Emulator allows and is designed for Python Agents
 #Pip install Guide for PyBoy to enter headless mode
 https://pypi.org/project/pyboy/
+pip install pyboy
 
 The RAM Represents different catagroies such as names, pokemons, badges
 Each game has different RAM's so its important to adapt to the game
@@ -44,3 +50,8 @@ Develop its own risk/reward system for battles, resource use, training, and capt
 Persist knowledge between runs so it can replay the game better and apply its learned strategy to new Pokémon games or improve its times.
 Be trained using reinforcement learning (using PPO and CQL) using my M2 Pro’s GPU for simulation and training.
 Essentially — this is an autonomous Pokémon-playing RL system with long-term memory, designed to improve over time, adapt to opponents, and handle both main story and post-game content without human intervention.
+
+
+To Run it:
+pip install gymnasium
+pip install pyboy
