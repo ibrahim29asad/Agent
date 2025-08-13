@@ -2,16 +2,16 @@
 # Uses an imperfect Version of Markov Decision Process
 import gymnasium as gym
 from EmulatorAdaptor import EmulatorAdaptor
+from PokemonBlue import PokemonBlue
 from gymnasium import spaces
 
 print("Imported Gym")
 
-class gymML:
+class gymML(gym.Env):
     def __init__(self, Game):
-        env = gym.make('Pokemon-v1')
         print("Starting RL Enviroment")
         # Loading Emulator
-        Emulation = EmulatorAdaptor(Game)
+        self.Emulation = EmulatorAdaptor(Game)
         self.controls = {
             "0": 'up',
             "1": 'down',
@@ -21,23 +21,53 @@ class gymML:
             "5": 'select',
             "6": 'a',
             "7": 'b',
-            "8": ' '
+            "8": None
         }
         self.action_space = spaces.Discrete(9)
+        self.Emulation.pyboy.tick() 
+        # this is what is being looked at those Values in specific 
+        self.observation_space = PokemonBlue.get_State(self.Emulation.pyboy)
+
     
     def make(self):
         pass
 
-    def reset(self):
+    def reset(self, Game, saveState):
+        info = self.getInfo()
+        obs = PokemonBlue.get_State(self.Emulation.pyboy)
+        self.Emulation.end_game()
+        self.Emulation.EmulatorAdaptor(Game)
+        self.Emulation.pyboy.tick()
+        self.Emulation.Load_State(saveState)
+        return info, obs
+        
 
-        pass
 
-    def step(self):
-        pass
+    def getInfo(self):
+        current_state = PokemonBlue.get_state(self.Emulation.pyboy)
+        x, y = current_state["player"]['Y-Location'], current_state["player"]['X-Location']
+        info = (x, y)
+        return info
+    
+    def step(self, action):
+        # So we call the have the action 
+        reward = 0
+        self.Emulation.button_Press(action)
+        # Update Reward based on if something happend with the RAM Values
+        # for now just return 0
+        obs = PokemonBlue.get_State(self.Emulation.pyboy)
+        terminated = 1 # did it quit
+        truncated = 1 # did the objectve pass
+        info = self.getInfo()
+
+        return obs, reward, terminated, truncated, info
+        
 
     def render(self):
         pass
 
+    def off(self):
+        self.Emulation.end_Game()
 
 
     # make(), Env.reset(), Env.step() and Env.render().

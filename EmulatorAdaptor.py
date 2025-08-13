@@ -47,7 +47,7 @@ class EmulatorAdaptor:
          
     
     def Load_State(self, Load):
-        with io.BytesIO() as f:
+        with io.BytesIO(Load) as f:
             f.seek(0)
             self.pyboy.load_state(f)
         

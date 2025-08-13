@@ -15,6 +15,10 @@ Use CQL (Conservative Q-Learning) for Battle Mechanics
 
 Starting off with Pokemon Red/Blue - Test and Train with it as it is the smallest game of the bunch 
 
+Train Guide:
+- Start Loading Screen 
+- Select Name
+
 Possible Games:
 -> Pokemon Gold/Silver
 -> Pokemon LeafGreen/FireRed
