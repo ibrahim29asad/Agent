@@ -12,15 +12,15 @@ class EmulatorAdaptor:
         self.pyboy = PyBoy(Game)
         mems = self.pyboy.memory
         self.controls = {
-            "1": 'up',
-            "2": 'down',
-            "3": 'left',
-            "4": 'right',
-            "5": 'start',
-            "6": 'select',
-            "7": 'a',
-            "8": 'b',
-            "9": 'end'
+            "0": 'up',
+            "1": 'down',
+            "2": 'left',
+            "3": 'right',
+            "4": 'start',
+            "5": 'select',
+            "6": 'a',
+            "7": 'b',
+            "8": None
         }
 
 

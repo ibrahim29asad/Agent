@@ -4,6 +4,7 @@ import gymnasium as gym
 from EmulatorAdaptor import EmulatorAdaptor
 from PokemonBlue import PokemonBlue
 from gymnasium import spaces
+import numpy as np
 
 print("Imported Gym")
 
@@ -44,32 +45,65 @@ class gymML(gym.Env):
     def make(self):
         pass
 
-    def reset(self, Game, saveState):
+    def reset(self, *, seed = None, options = None):
+        
+        super().reset(seed=seed)
+        
+        for _ in range(120):    
+            self.Emulation.pyboy.tick()
+
         info = self.getInfo()
-        obs = PokemonBlue.get_State(self.Emulation.pyboy)
-        self.Emulation.end_game()
-        self.Emulation.EmulatorAdaptor(Game)
-        self.Emulation.pyboy.tick()
-        self.Emulation.Load_State(saveState)
+        obs = self._format_obs(PokemonBlue.get_State(self.Emulation.pyboy))
         return obs, info
         
 
 
     def getInfo(self):
-        current_state = PokemonBlue.get_state(self.Emulation.pyboy)
+        current_state = PokemonBlue.get_State(self.Emulation.pyboy)
         x, y = current_state["player"]['Y-Location'], current_state["player"]['X-Location']
-        info = (x, y)
-        return info
+        return { "x": x, "y": y }
     
+    # Still need to format it from the get_State
+    def _format_obs(self, state):
+        return {
+            "player": {
+                "name": np.array(state['player']['name'], dtype=np.uint8),
+                "X-Location": int(state['player']['X-Location']),
+                "Y-Location": int(state['player']['Y-Location']),
+                "facing": int(state['player']['facing']),
+                "badges": int(state['player']['badges']),
+            },
+            "rival": {
+                "name": np.array(state['rival']['name'], dtype=np.uint8),
+            }
+        }
+
     def step(self, action):
         # So we call the have the action 
         reward = 0
-        self.Emulation.button_Press(action)
+        
+        self.Emulation.button_Press(str(action))
+
+        for _ in range(60):    
+            self.Emulation.pyboy.tick()
+
         # Update Reward based on if something happend with the RAM Values
         # for now just return 0
-        obs = PokemonBlue.get_State(self.Emulation.pyboy)
-        terminated = 0 # did it quit
-        truncated = 0 # did the objectve pass
+        obs = self._format_obs(PokemonBlue.get_State(self.Emulation.pyboy))
+        # obs = spaces.Dict({
+        #     "player": spaces.Dict({
+        #         "name": temp_obs['player']['name'],
+        #         "X-Location": temp_obs['player']['X-Location'],
+        #         "Y-Location": temp_obs['player']['Y-Location'],
+        #         "facing": temp_obs['player']['facing'],
+        #         "badges": temp_obs['player']['badges'],
+        #     }),
+        #     "rival": spaces.Dict({
+        #         "name": temp_obs['rival']['name'],
+        #     })
+        # })
+        terminated = False # did it quit
+        truncated = False # did the objectve pass
         info = self.getInfo()
 
         return obs, reward, terminated, truncated, info
