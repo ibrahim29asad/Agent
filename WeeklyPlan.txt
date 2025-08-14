@@ -1,0 +1,36 @@
+The Conceptual Plan:
+
+Week 1: Environment & RAM Integration
+Build Gymnasium env with emulator
+Read key RAM values (player coords, map ID, story flags, dialogue state)
+Return combined obs: pixels + RAM-based state
+Define action space (movement, interact, menu)
+Test env stability and correctness
+
+Week 2: Expand RAM Coverage & Encoding
+Add more story/event flags (badges, key items, NPC flags)
+One-hot encode categorical states (maps, dialogues)
+Normalize numeric RAM values
+Debug tools for readable story state
+Scripted navigation tests (move to map coords)
+
+Week 3: Navigation & Basic Interaction Training
+Train PPO on overworld navigation tasks (reach coords, enter buildings)
+Train item pickup and basic item use (open bag, use item)
+Reward shaping for goal reaching & item use success
+
+Week 4: Battle State & Basic Combat Skills
+Add battle RAM reads (HP, battle state, moves)
+Train PPO to win simple wild battles (move choice, switching, item use)
+Combine navigation + battle training
+
+Week 5: Healing & Quest Progression
+Train healing (navigate to Pokémon Center, trigger heal)
+Train quest actions (talk NPC, deliver items, trigger events)
+Chain subtasks in curriculum episodes
+
+Week 6: Full Story Integration & Long-Term Goals
+Combine all skills into unified policy or hierarchical controller
+Train on longer episodes (beat gyms, complete quests, explore)
+Log story progress & decisions
+Evaluate full game autonomous play

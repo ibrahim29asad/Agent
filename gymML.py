@@ -26,7 +26,19 @@ class gymML(gym.Env):
         self.action_space = spaces.Discrete(9)
         self.Emulation.pyboy.tick() 
         # this is what is being looked at those Values in specific 
-        self.observation_space = PokemonBlue.get_State(self.Emulation.pyboy)
+        self.observation_space = spaces.Dict({
+            "player": spaces.Dict({
+                "name": spaces.Box(low=0, high=255, shape=(4,), dtype=np.uint8),
+                "X-Location": spaces.Discrete(256),
+                "Y-Location": spaces.Discrete(256),
+                "facing": spaces.Discrete(256),
+                "badges": spaces.Discrete(256),
+            }),
+            "rival": spaces.Dict({
+                "name": spaces.Box(low=0, high=255, shape=(7,), dtype=np.uint8),
+            })
+        })
+
 
     
     def make(self):
@@ -39,7 +51,7 @@ class gymML(gym.Env):
         self.Emulation.EmulatorAdaptor(Game)
         self.Emulation.pyboy.tick()
         self.Emulation.Load_State(saveState)
-        return info, obs
+        return obs, info
         
 
 
@@ -56,8 +68,8 @@ class gymML(gym.Env):
         # Update Reward based on if something happend with the RAM Values
         # for now just return 0
         obs = PokemonBlue.get_State(self.Emulation.pyboy)
-        terminated = 1 # did it quit
-        truncated = 1 # did the objectve pass
+        terminated = 0 # did it quit
+        truncated = 0 # did the objectve pass
         info = self.getInfo()
 
         return obs, reward, terminated, truncated, info
