@@ -20,7 +20,8 @@ class EmulatorAdaptor:
             "5": 'select',
             "6": 'a',
             "7": 'b',
-            "8": None
+            "8": None,
+            "9": "io"
         }
 
 
@@ -29,7 +30,7 @@ class EmulatorAdaptor:
             print("Cant do that boss")
             return
         elif action == "9":
-            self.end_Game()
+            self.Save_State()
         else:
             print("Entered the Input: " + self.controls[action])
             for _ in range(15):
@@ -40,7 +41,7 @@ class EmulatorAdaptor:
         new_word = PokemonBlue.decode_gen1(to_print)
         print("Players Name is "+ new_word)
         
-    def Save_State(self, saved):
+    def Save_State(self):
         with io.BytesIO() as f:
             f.seek(0)
             self.pyboy.save_state(f)

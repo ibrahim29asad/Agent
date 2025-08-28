@@ -13,6 +13,7 @@ class gymML(gym.Env):
         print("Starting RL Enviroment")
         # Loading Emulator
         self.Emulation = EmulatorAdaptor(Game)
+        self.Game = Game
         self.controls = {
             "0": 'up',
             "1": 'down',
@@ -48,7 +49,11 @@ class gymML(gym.Env):
     def reset(self, *, seed = None, options = None):
         
         super().reset(seed=seed)
-        
+        self.Emulation.end_Game()
+
+        if options == None:
+            self.Emulation = EmulatorAdaptor(self.Game)
+
         for _ in range(120):    
             self.Emulation.pyboy.tick()
 
@@ -60,7 +65,7 @@ class gymML(gym.Env):
 
     def getInfo(self):
         current_state = PokemonBlue.get_State(self.Emulation.pyboy)
-        x, y = current_state["player"]['Y-Location'], current_state["player"]['X-Location']
+        y, x = current_state["player"]['Y-Location'], current_state["player"]['X-Location']
         return { "x": x, "y": y }
     
     # Still need to format it from the get_State
