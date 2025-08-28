@@ -42,6 +42,7 @@ class gymML(gym.Env):
         })
 
 
+
     
     def make(self):
         pass
@@ -70,16 +71,27 @@ class gymML(gym.Env):
     
     # Still need to format it from the get_State
     def _format_obs(self, state):
+        # print("IN HERE ") DeBug
+        
+        player_name = np.array(state['player']['name'], dtype=np.uint8)[:4]
+        if player_name.shape[0] < 4:
+            player_name = np.pad(player_name, (0, 4 - player_name.shape[0]))
+
+        # Rival name -> trim or pad to length 7
+        rival_name = np.array(state['rival']['name'], dtype=np.uint8)[:7]
+        if rival_name.shape[0] < 7:
+            rival_name = np.pad(rival_name, (0, 7 - rival_name.shape[0]))
+
         return {
             "player": {
-                "name": np.array(state['player']['name'], dtype=np.uint8),
+                "name": player_name,
                 "X-Location": int(state['player']['X-Location']),
                 "Y-Location": int(state['player']['Y-Location']),
                 "facing": int(state['player']['facing']),
                 "badges": int(state['player']['badges']),
             },
             "rival": {
-                "name": np.array(state['rival']['name'], dtype=np.uint8),
+                "name":rival_name,
             }
         }
 
@@ -122,3 +134,4 @@ class gymML(gym.Env):
 
 
     # make(), Env.reset(), Env.step() and Env.render().
+

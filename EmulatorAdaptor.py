@@ -31,6 +31,8 @@ class EmulatorAdaptor:
             return
         elif action == "9":
             self.Save_State()
+        elif action == "8":   # no-op
+            return
         else:
             print("Entered the Input: " + self.controls[action])
             for _ in range(15):
