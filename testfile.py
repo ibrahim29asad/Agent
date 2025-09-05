@@ -1,6 +1,7 @@
 
 from dotenv import load_dotenv
 import os
+import csv # Added to create a Logged Record
 from EmulatorAdaptor import EmulatorAdaptor
 from gymML import gymML
 
@@ -15,32 +16,48 @@ print("Starting Pokemon Game")
 # Initialize env instead of just EmulatorAdaptor
 env = gymML(Pokemon_game)
 
+
 obs, info = env.reset()
 print("Initial obs keys:", obs.keys() if isinstance(obs, dict) else type(obs))
 
-# Run 1000 random steps
-for step in range(1000):
-    action = env.action_space.sample()
-    obs, reward, terminated, truncated, info = env.step(action)
-
-    print("Sample obs:")
-    for k, v in obs.items():
-        print(f"  {k}: type={type(v)}, value={v}")
-        if hasattr(v, "shape"):
-            print(f"     shape={v.shape}, dtype={v.dtype}")
-
-    assert env.observation_space.contains(obs), "Obs doesn't match space!"
-
-    # Example logging if your obs dict has positions
-    if isinstance(obs, dict) and "player_xy" in obs:
-        if step % 100 == 0:
-            print(f"Step {step}: player_xy={obs['player_xy']}")
-
-    if terminated or truncated:
+trials = 3
+rand_steps = 10
+inital_training_csv = "training_2_day2.csv"
+with open(inital_training_csv, 'w', newline='') as file:
+    writer = csv.writer(file)
+    # Getting a Player Name and Rival Name is enough information to know im done the title Screen
+    writer.writerow(["Trial", "Step", "Player_name", "Player_X", 
+                      "Player_Y", "Facing", "Badges", "Rival_Name" ])
+    # Run 1000 random steps
+    for tr in range(trials):
         obs, info = env.reset()
+        for step in range(rand_steps):
+            action = env.action_space.sample()
+            obs, reward, terminated, truncated, info = env.step(action)
+            print("Sample obs:")
+            #Write into 
+            write_row = []
+            write_row.append([tr])
+            write_row.append([step])
+
+            for k, v in obs.items():
+                print(f"  {k}: type={type(v)}, value={v}")
+                write_row.append([v])
+                if hasattr(v, "shape"):
+                    write_row.pop()
+                    write_row.append([v.shape])
+                    print(f"     shape={v.shape}, dtype={v.dtype}")
+            writer.writerow(write_row)
+            assert env.observation_space.contains(obs), "Obs doesn't match space!"
+
+            if terminated or truncated:
+                print(f"On the {tr} Trial and on {step} We Exited out")
+                obs, info = env.reset()
+                break
 
 env.close()
-print("✅ Finished 1000 random steps without crash")
+# Add F String
+print(f"✅ Finished {rand_steps} random steps {trials} times without crash")
 
 
 

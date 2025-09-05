@@ -8,9 +8,9 @@ class PokemonBlue:
         current_state = {
             'player': {
                 'name': mems[0xD158:0xD162],
-                'X-Location': mems[0xC196],
-                'Y-Location': mems[0xC194],
-                'facing': mems[0xC199],
+                'X-Location': mems[0xD362],
+                'Y-Location': mems[0xD361],
+                'facing': mems[0xD35E],
                 'badges': mems[0xD356],
             },
             'rival': {
