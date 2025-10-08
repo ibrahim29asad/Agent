@@ -42,6 +42,10 @@ class gymML(gym.Env):
                 "items": spaces.Box(low=0, high=255, shape=(11,), dtype=np.uint8),
                 "text_open": spaces.Discrete(2),
                 "npc_flags": spaces.Box(low=0, high=255, shape=(16,), dtype=np.uint8),
+                'map_connections': spaces.Box(low=0, high=255, shape=(2,), dtype=np.uint8),
+                'player_state': spaces.Discrete(256),
+                'oak_event': spaces.Discrete(256),
+                'pokemon_count': spaces.Discrete(256),
             }),
             "rival": spaces.Dict({
                 "name": spaces.Box(low=0, high=255, shape=(7,), dtype=np.uint8),
@@ -115,7 +119,11 @@ class gymML(gym.Env):
                 "story_flags": np.array(state['player']['story_flags'], dtype=np.uint8),
                 "items": np.array(state['player']['items'], dtype=np.uint8),
                 "text_open": int(state['player']['text_open']),
-                "npc_flags": npc_flags
+                "npc_flags": npc_flags,
+                'map_connections': np.array(state['player']['map_connections'], dtype=np.uint8), 
+                'player_state': int(state['player']['player_state']),
+                'oak_event': int(state['player']['oak_event']),
+                'pokemon_count': int(state['player']['pokemon_count']),
             },
             "rival": {
                 "name":rival_name,
@@ -123,34 +131,44 @@ class gymML(gym.Env):
         }
 
     def step(self, action):
-        # So we call the have the action 
-        reward = 0
+        prev_state = PokemonBlue.get_State(self.Emulation.pyboy)
         
         self.Emulation.button_Press(str(action))
-
         for _ in range(60):    
             self.Emulation.pyboy.tick()
+            
+        current_state = PokemonBlue.get_State(self.Emulation.pyboy)
+        reward = self.calculate_reward(prev_state, current_state, action)
 
-        # Update Reward based on if something happend with the RAM Values
-        # for now just return 0
-        obs = self._format_obs(PokemonBlue.get_State(self.Emulation.pyboy))
-        # obs = spaces.Dict({
-        #     "player": spaces.Dict({
-        #         "name": temp_obs['player']['name'],
-        #         "X-Location": temp_obs['player']['X-Location'],
-        #         "Y-Location": temp_obs['player']['Y-Location'],
-        #         "facing": temp_obs['player']['facing'],
-        #         "badges": temp_obs['player']['badges'],
-        #     }),
-        #     "rival": spaces.Dict({
-        #         "name": temp_obs['rival']['name'],
-        #     })
-        # })
-        terminated = False # did it quit
-        truncated = False # did the objectve pass
+        
+        
+        obs = self._format_obs(current_state)
+        # terminated = self._check_termination(current_state)
+        terminated = False
+        truncated = False
         info = self.getInfo()
-
+        
         return obs, reward, terminated, truncated, info
+    
+   
+    def calculate_reward(self, prev_state, current_state, action):
+        reward = 0
+        
+        # Movement reward
+        if prev_state['player']['X-Location'] != current_state['player']['X-Location'] or \
+        prev_state['player']['Y-Location'] != current_state['player']['Y-Location']:
+            reward += 0.1  # Small reward for moving
+        
+        # Exploration reward (new map)
+        if prev_state['player']['map'] != current_state['player']['map']:
+            reward += 1.0
+            
+        # Progress reward (story flags)
+        new_flags = set(current_state['player']['story_flags']) - set(prev_state['player']['story_flags'])
+        if new_flags:
+            reward += 2.0
+            
+        return reward
         
     def debug_state(self, state):
         print(f"Map ID: {state['map']}")
