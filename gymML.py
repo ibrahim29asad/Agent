@@ -27,7 +27,8 @@ class gymML(gym.Env):
             "8": None
         }
         self.action_space = spaces.Discrete(9)
-        self.Emulation.pyboy.tick() 
+        self.Emulation.pyboy.tick()
+
         # this is what is being looked at those Values in specific 
         self.observation_space = spaces.Dict({
             "player": spaces.Dict({
@@ -36,11 +37,17 @@ class gymML(gym.Env):
                 "Y-Location": spaces.Discrete(256),
                 "facing": spaces.Discrete(256),
                 "badges": spaces.Discrete(256),
+                "map": spaces.Discrete(256),
+                "story_flags": spaces.Box(low=0, high=255, shape=(16,), dtype=np.uint8),
+                "items": spaces.Box(low=0, high=255, shape=(11,), dtype=np.uint8),
+                "text_open": spaces.Discrete(2),
+                "npc_flags": spaces.Box(low=0, high=255, shape=(16,), dtype=np.uint8),
             }),
             "rival": spaces.Dict({
                 "name": spaces.Box(low=0, high=255, shape=(7,), dtype=np.uint8),
             })
         })
+
 
 
 
@@ -70,26 +77,45 @@ class gymML(gym.Env):
         y, x = current_state["player"]['Y-Location'], current_state["player"]['X-Location']
         return { "x": x, "y": y }
     
-    # Still need to format it from the get_State
+    def encode_player_name(self, name_bytes, length=4):
+        arr = np.array(name_bytes, dtype=np.uint8)[:length]
+        if arr.shape[0] < length:
+            arr = np.pad(arr, (0, length - arr.shape[0]))
+        return arr
+
+    def encode_flags(self, flags_bytes):
+        flags = np.array(flags_bytes, dtype=np.uint8)
+        one_hot_flags = np.zeros((len(flags), 256), dtype=np.uint8)
+        for i, val in enumerate(flags):
+            one_hot_flags[i, val] = 1
+        return one_hot_flags.flatten()
+
+    def normalize(self,val, max_val=255):
+        return val / max_val
+
+    
     def _format_obs(self, state):
-        # print("IN HERE ") DeBug
-        
-        player_name = np.array(state['player']['name'], dtype=np.uint8)[:4]
-        if player_name.shape[0] < 4:
-            player_name = np.pad(player_name, (0, 4 - player_name.shape[0]))
+        # player_name = self.encode_player_name(state['player']['name'])
+        player_name = self.encode_player_name(state['player']['name'], length=4)
+        rival_name = self.encode_player_name(state['rival']['name'], length=7)
+        # npc_flags = self.encode_flags(state['player']['npc_flags'])
+        npc_flags = np.array(state['player']['npc_flags'], dtype=np.uint8)  
 
-        # Rival name -> trim or pad to length 7
-        rival_name = np.array(state['rival']['name'], dtype=np.uint8)[:7]
-        if rival_name.shape[0] < 7:
-            rival_name = np.pad(rival_name, (0, 7 - rival_name.shape[0]))
-
+        # Access map, story_flags, items, text_open from state['player'] instead
         return {
             "player": {
                 "name": player_name,
                 "X-Location": int(state['player']['X-Location']),
                 "Y-Location": int(state['player']['Y-Location']),
+                # "X-Location": self.normalize(state['player']['X-Location']),
+                # "Y-Location": self.normalize(state['player']['Y-Location']),
                 "facing": int(state['player']['facing']),
                 "badges": int(state['player']['badges']),
+                "map": int(state['player']['map']),
+                "story_flags": np.array(state['player']['story_flags'], dtype=np.uint8),
+                "items": np.array(state['player']['items'], dtype=np.uint8),
+                "text_open": int(state['player']['text_open']),
+                "npc_flags": npc_flags
             },
             "rival": {
                 "name":rival_name,
@@ -126,7 +152,7 @@ class gymML(gym.Env):
 
         return obs, reward, terminated, truncated, info
         
-    def debug_state(state):
+    def debug_state(self, state):
         print(f"Map ID: {state['map']}")
         print(f"Player at ({state['player']['X-Location']}, {state['player']['Y-Location']})")
         print(f"Badges: {state['player']['badges']}")

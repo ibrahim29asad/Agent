@@ -17,6 +17,7 @@ class PokemonBlue:
                 'story_flags': mems[0xD747:0xD757],
                 'items': mems[0xD31D:0xD328],
                 'text_open': mems[0xCFC5],
+                'npc_flags': mems[0xD400:0xD410],
             },
             'rival': {
                 'name': mems[0xD34A:0xD351],
