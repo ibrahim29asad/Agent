@@ -1,3 +1,4 @@
+# PokemonBlue.py
 class PokemonBlue:
     def __init__(self):
         pass
@@ -12,6 +13,10 @@ class PokemonBlue:
                 'Y-Location': mems[0xD361],
                 'facing': mems[0xD35E],
                 'badges': mems[0xD356],
+                'map': mems[0xD35E],
+                'story_flags': mems[0xD747:0xD757],
+                'items': mems[0xD31D:0xD328],
+                'text_open': mems[0xCFC5],
             },
             'rival': {
                 'name': mems[0xD34A:0xD351],

@@ -1,3 +1,4 @@
+# EmulatorAdaptor.py
 from pyboy import PyBoy
 import io
 import keyboard

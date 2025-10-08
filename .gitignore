@@ -1,3 +1,4 @@
 *.gb
 .env
 *.ram
+rand.txt

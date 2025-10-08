@@ -1,4 +1,4 @@
-
+#testfile.py
 from dotenv import load_dotenv
 import os
 import csv # Added to create a Logged Record
@@ -18,6 +18,8 @@ env = gymML(Pokemon_game)
 
 
 obs, info = env.reset()
+# EmulatorAdaptor.wait_for_overworld()
+
 print("Initial obs keys:", obs.keys() if isinstance(obs, dict) else type(obs))
 
 trials = 3
@@ -28,8 +30,11 @@ with open(inital_training_csv, 'w', newline='') as file:
     # Getting a Player Name and Rival Name is enough information to know im done the title Screen
     writer.writerow(["Trial", "Step", "Player_name", "Player_X", 
                       "Player_Y", "Facing", "Badges", "Rival_Name" ])
+
+    
     # Run 1000 random steps
     for tr in range(trials):
+        
         obs, info = env.reset()
         for step in range(rand_steps):
             action = env.action_space.sample()
@@ -54,6 +59,9 @@ with open(inital_training_csv, 'w', newline='') as file:
                 print(f"On the {tr} Trial and on {step} We Exited out")
                 obs, info = env.reset()
                 break
+
+        # Move right 5 times, then down 3 times
+    
 
 env.close()
 # Add F String

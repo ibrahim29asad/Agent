@@ -1,5 +1,6 @@
 # Purpose of this is to create the RL Enviroment using Gymnasium by OpenAI
 # Uses an imperfect Version of Markov Decision Process
+#gymML.py
 import gymnasium as gym
 from EmulatorAdaptor import EmulatorAdaptor
 from PokemonBlue import PokemonBlue
@@ -125,12 +126,18 @@ class gymML(gym.Env):
 
         return obs, reward, terminated, truncated, info
         
+    def debug_state(state):
+        print(f"Map ID: {state['map']}")
+        print(f"Player at ({state['player']['X-Location']}, {state['player']['Y-Location']})")
+        print(f"Badges: {state['player']['badges']}")
+        print(f"Dialogue open: {bool(state['dialogue_state'])}")
 
     def render(self):
         pass
 
     def off(self):
         self.Emulation.end_Game()
+
 
 
     # make(), Env.reset(), Env.step() and Env.render().
