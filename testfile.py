@@ -37,10 +37,12 @@ with open(inital_training_csv, 'w', newline='') as file:
         
         obs, info = env.reset()
         for step in range(rand_steps):
+            # Gives a Random Step 1-9
             action = env.action_space.sample()
+            # Places it and returns the infor 
             obs, reward, terminated, truncated, info = env.step(action)
             print("Sample obs:")
-            #Write into 
+            #Whats being written into the CSV File
             write_row = []
             write_row.append([tr])
             write_row.append([step])
@@ -52,9 +54,10 @@ with open(inital_training_csv, 'w', newline='') as file:
                     write_row.pop()
                     write_row.append([v.shape])
                     print(f"     shape={v.shape}, dtype={v.dtype}")
-            writer.writerow(write_row)
+            writer.writerow(write_row) #Writing into the file
+            # checks to see if values match up 
             assert env.observation_space.contains(obs), "Obs doesn't match space!"
-
+            # if it fails
             if terminated or truncated:
                 print(f"On the {tr} Trial and on {step} We Exited out")
                 obs, info = env.reset()
